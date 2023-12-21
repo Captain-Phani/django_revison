@@ -35,3 +35,12 @@ class MovieSerializer(serializers.Serializer):
         instance.save()
         return instance
 
+#1. Field-Level Validator:
+
+
+
+#In serializers we can customize validators and there are three types of validators
+#1.field-level validator
+#2.object-level validator
+#3.validators
+
