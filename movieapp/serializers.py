@@ -2,9 +2,16 @@ from rest_framework import serializers
 
 from .models import Movies
 
+def get_name(value):
+    """
+        This method is a validator for a field 'name' specified in name field
+    """
+    if (len(value)==0):
+        raise serializers.ValidationError('Value should not be empty')
+
 class MovieSerializer(serializers.Serializer):
     id=serializers.IntegerField(read_only=True)
-    name=serializers.CharField()
+    name=serializers.CharField(validators=[get_name]) #validator
     description=serializers.CharField()
     active=serializers.BooleanField()
 
@@ -36,6 +43,33 @@ class MovieSerializer(serializers.Serializer):
         return instance
 
 #1. Field-Level Validator:
+
+    def validate_name(self,value):
+        if(len(value)<2):
+            raise serializers.ValidationError("Name is too short")
+        else:
+            return value
+
+
+#object level
+
+    def validate(self,data):
+        # if data['name']==data['description']:
+        #     raise serializers.ValidationError('name and description should be diferent')
+        # else:
+        #     return data
+
+        name=data.get('name')
+        description=data.get('description')
+
+        if Movies.objects.filter(name=name,description=description).exists():
+            """
+            Check if object with same values exists if it exists 
+            """
+            raise serializers.ValidationError('Object already exist')
+        else:
+            return data
+
 
 
 
